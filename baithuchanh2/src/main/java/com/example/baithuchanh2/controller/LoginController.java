@@ -33,8 +33,8 @@ public class LoginController {
         return "Hello World";
     }
 	
-	@GetMapping("/auth/product")
-    public boolean productAuth() {
+	@GetMapping("/auth/baithuchanh")
+    public boolean auth() {
         return true;
     }
 }

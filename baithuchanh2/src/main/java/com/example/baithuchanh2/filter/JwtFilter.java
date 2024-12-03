@@ -36,7 +36,7 @@ public class JwtFilter implements Filter {
 	        	//thiết lập mã trạng thái HTTP của phản hồi (response) mà server gửi lại cho client là 401 Unauthorized
 	            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	            //gửi một thông báo lỗi (message) về client trong body của phản hồi HTTP (response) khi mã trạng thái là 401 Unauthorized
-	            httpResponse.getWriter().write("Token không tồn tại hoặc không hợp lệ");
+	            httpResponse.getWriter().write("Token does not exist or is invalid");
 	            return;
 	        }
 
@@ -53,7 +53,7 @@ public class JwtFilter implements Filter {
 	            	
 	                // Token không hợp lệ
 	                httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	                httpResponse.getWriter().write("Token không hợp lệ");
+	                httpResponse.getWriter().write("Token invalid");
 	            }
 	        } catch (Exception e) {
 	            // Xử lý ngoại lệ nếu có
