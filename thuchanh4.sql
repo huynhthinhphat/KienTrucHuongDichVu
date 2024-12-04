@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th12 03, 2024 lúc 03:03 PM
+-- Thời gian đã tạo: Th12 04, 2024 lúc 06:38 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -42,8 +42,8 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `total_amount`, `created_at`, `updated_at`, `customer_email`, `customer_name`, `status`) VALUES
-(1, 20000000.00, '2024-12-03 14:41:08.000000', '2024-12-03 19:11:06.000000', 'phathuynh.040803@gmail.com', 'Huỳnh Thịnh Phát', 'pending'),
-(2, 990000.00, '2024-12-03 19:53:47.000000', '2024-12-03 20:25:43.000000', 'abc@gmail.com', 'Nguyễn Văn A', 'pending');
+(1, 150000.00, '2024-12-03 14:41:08.000000', '2024-12-05 00:37:44.000000', 'phathuynh.040803@gmail.com', 'Huỳnh Thịnh Phát', 'pending'),
+(2, 990000.00, '2024-12-03 19:53:47.000000', '2024-12-05 00:23:15.000000', 'abc@gmail.com', 'Nguyễn Văn A', 'pending');
 
 -- --------------------------------------------------------
 
@@ -66,8 +66,9 @@ CREATE TABLE `other_items` (
 --
 
 INSERT INTO `other_items` (`id`, `order_id`, `product_id`, `quantity`, `total_price`, `unit_price`, `product_name`) VALUES
-(1, 1, 1, 1, 20000000.00, 20000000.00, 'Laptop'),
-(2, 2, 2, 99, 990000.00, 10000.00, 'Laptop xém xịn');
+(1, 1, 1, 3, 30000.00, 10000.00, 'Laptop'),
+(2, 2, 2, 99, 990000.00, 10000.00, 'Laptop xém xịn'),
+(51, 1, 1, 12, 120000.00, 10000.00, 'Laptop Dell Số 1');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -100,7 +101,7 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT cho bảng `other_items`
 --
 ALTER TABLE `other_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

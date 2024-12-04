@@ -1,6 +1,7 @@
 package com.example.baithuchanh4.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import com.example.baithuchanh4.entities.Orders;
 import com.example.baithuchanh4.entities.OtherItems;
 import com.example.baithuchanh4.request.OrdersRequest;
 import com.example.baithuchanh4.response.OtherItemsResponse;
+import com.example.baithuchanh4.response.ProductsResponse;
 import com.example.baithuchanh4.service.OrdersService;
 import com.example.baithuchanh4.service.RequestOtherPortService;
 
@@ -31,7 +33,8 @@ public class OrdersController {
 	}
 
 	@GetMapping("/{id}")
-	private List<OtherItemsResponse> getInforOfOrders(@PathVariable int id, @RequestHeader("Authorization") String token) {
+	private Optional<Orders> getInforOfOrders(@PathVariable int id,
+			@RequestHeader("Authorization") String token) {
 		requestOtherPortService.checkAuthentication(token);
 		return ordersService.getOrderById(id);
 	}

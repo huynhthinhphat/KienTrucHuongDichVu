@@ -13,6 +13,7 @@ import com.example.baithuchanh4.repository.OrdersRepository;
 import com.example.baithuchanh4.repository.OtherItemsRepository;
 import com.example.baithuchanh4.request.OtherItemsRequest;
 import com.example.baithuchanh4.response.OtherItemsResponse;
+import com.example.baithuchanh4.response.ProductsResponse;
 
 @Service
 public class OtherItemsService {
@@ -22,6 +23,9 @@ public class OtherItemsService {
 
 	@Autowired
 	private OrdersRepository ordersRepository;
+	
+	@Autowired
+	private RequestOtherPortService requestOtherPortService;
 
 	public List<OtherItemsResponse> getAllOtherItems() {
 		return otherItemsRepository.findAllOtherItems();
@@ -31,7 +35,11 @@ public class OtherItemsService {
 		return otherItemsRepository.findById(id);
 	}
 
-	public Boolean addNewOtherItems(OtherItemsRequest otherItemsRequest) {
+	public Boolean addNewOtherItems(ProductsResponse productsResponse, OtherItemsRequest otherItemsRequest) {
+
+		if (otherItemsRequest.getQuantity() < 0) {
+			return false;
+		}
 
 		Optional<Orders> o = ordersRepository.findById(otherItemsRequest.getOrder_id());
 
@@ -42,15 +50,22 @@ public class OtherItemsService {
 			oi = new OtherItems();
 
 			BigDecimal quantity = new BigDecimal(otherItemsRequest.getQuantity());
-			BigDecimal unit_price = otherItemsRequest.getUnit_price();
-			BigDecimal total_price = getTotalPrice(quantity, unit_price);
+			BigDecimal price;
 
-			oi.setOrder(o.get());
-			oi.setProduct_id(otherItemsRequest.getProduct_id());
-			oi.setProduct_name(otherItemsRequest.getProduct_name());
+			if (otherItemsRequest.getUnit_price() != null) {
+				price = otherItemsRequest.getUnit_price();
+			} else {
+				price = productsResponse.getPrice();
+			}
+
+			BigDecimal total_price = getTotalPrice(quantity, price);
+			
 			oi.setQuantity(otherItemsRequest.getQuantity());
-			oi.setUnit_price(unit_price);
+			oi.setUnit_price(price);
 			oi.setTotal_price(total_price);
+			oi.setProduct_id(otherItemsRequest.getProduct_id());
+			oi.setProduct_name(productsResponse.getName());
+			oi.setOrder(o.get());
 
 			otherItemsRepository.save(oi);
 
@@ -63,34 +78,52 @@ public class OtherItemsService {
 
 	}
 
-	public Boolean updateOtherItems(int id, OtherItemsRequest otherItemsRequest) {
+	public Boolean updateOtherItems(int id, ProductsResponse productsResponse, OtherItemsRequest otherItemsRequest) {
 
+		if (otherItemsRequest.getQuantity() <= 0) {
+			return false;
+		}
+
+		// tìm object otheritem theo id để update
 		Optional<OtherItems> o = otherItemsRepository.findById(id);
 
-		Orders order = ordersRepository.findById(otherItemsRequest.getOrder_id()).orElse(null);
+		// tìm object order theo id order_id của object otheritem
+		Orders order = ordersRepository.findById(o.get().getOrder().getId()).orElse(null);
 
+		// khởi tạo 1 object otheritem để kiểm tra update thành công hay không
 		OtherItems statusOtherItem = null;
 
+		// kiểm tra object otheritem tồn tại và object order != null
 		if (o.isPresent() && order != null) {
 
-			BigDecimal unit_price = otherItemsRequest.getUnit_price();
-			BigDecimal quantity = new BigDecimal(otherItemsRequest.getQuantity());
-			BigDecimal total_price = getTotalPrice(quantity, unit_price);
+			BigDecimal price;
+			if (otherItemsRequest.getUnit_price() != null) {
+				price = otherItemsRequest.getUnit_price();
+			} else {
+				price = o.get().getUnit_price();
+			}
 
-			o.get().setProduct_id(otherItemsRequest.getProduct_id());
-			o.get().setProduct_name(otherItemsRequest.getProduct_name());
-			o.get().setQuantity(otherItemsRequest.getQuantity());
-			o.get().setUnit_price(unit_price);
+			// ép kiểu dữ liệu của quantity từ int thành BigDecimal
+			BigDecimal quantity = new BigDecimal(otherItemsRequest.getQuantity());
+
+			// nhận quantity và unit_price để lấy tổng tiền
+			BigDecimal total_price = getTotalPrice(quantity, price);
+
+			if (otherItemsRequest.getQuantity() != 0) {
+				o.get().setQuantity(otherItemsRequest.getQuantity());
+			}
+
+			o.get().setUnit_price(price);
 			o.get().setTotal_price(total_price);
 
 			statusOtherItem = otherItemsRepository.save(o.get());
 
-			order.setTotal_amount(otherItemsRepository.getTotalAmount(otherItemsRequest.getOrder_id()));
+			order.setTotal_amount(otherItemsRepository.getTotalAmount(o.get().getOrder().getId()));
 
 			ordersRepository.save(order);
 		}
 
-		return statusOtherItem != null && statusOtherItem.getId() > 0;
+		return statusOtherItem != null;
 	}
 
 	private BigDecimal getTotalPrice(BigDecimal quantity, BigDecimal unit_price) {
@@ -104,7 +137,7 @@ public class OtherItemsService {
 		if (otherItems == null) {
 			return false;
 		}
-
+		
 		Orders order = ordersRepository.findById(otherItems.getOrder().getId()).orElse(null);
 
 		if (order == null) {
@@ -112,10 +145,16 @@ public class OtherItemsService {
 		}
 
 		otherItemsRepository.deleteById(id);
+		
 		order.setTotal_amount(otherItemsRepository.getTotalAmount(otherItems.getOrder().getId()));
 
 		ordersRepository.save(order);
-		
+
 		return true;
 	}
+
+	public int quantityProduct(int product_id) {
+		return otherItemsRepository.quantityProduct(product_id);
+	}
+
 }

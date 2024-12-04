@@ -24,4 +24,7 @@ public interface OtherItemsRepository extends JpaRepository<OtherItems, Integer>
 	
 	@Query("SELECT SUM(o.total_price) FROM OtherItems o WHERE o.order.id = :id")
 	BigDecimal getTotalAmount(@Param("id") int id);
+	
+	@Query("SELECT SUM(o.quantity) FROM OtherItems o WHERE o.product_id = :product_id")
+	Integer quantityProduct(@Param("product_id") int product_id);
 }

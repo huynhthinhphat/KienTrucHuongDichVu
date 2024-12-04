@@ -13,6 +13,7 @@ import com.example.baithuchanh4.repository.OrdersRepository;
 import com.example.baithuchanh4.repository.OtherItemsRepository;
 import com.example.baithuchanh4.request.OrdersRequest;
 import com.example.baithuchanh4.response.OtherItemsResponse;
+import com.example.baithuchanh4.response.ProductsResponse;
 
 @Service
 public class OrdersService {
@@ -20,15 +21,12 @@ public class OrdersService {
 	@Autowired
 	private OrdersRepository ordersRepository;
 
-	@Autowired
-	private OtherItemsRepository otherItemsRepository;
-
 	public List<Orders> getAllOrders() {
 		return ordersRepository.findAll();
 	}
 
-	public List<OtherItemsResponse> getOrderById(int id) {
-		return otherItemsRepository.findByOrderId(id);
+	public Optional<Orders> getOrderById(int id) {
+		return ordersRepository.findById(id);
 	}
 
 	public Boolean addNewOrder(OrdersRequest ordersRequest) {
