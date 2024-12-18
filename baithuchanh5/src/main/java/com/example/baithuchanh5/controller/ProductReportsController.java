@@ -35,12 +35,21 @@ public class ProductReportsController {
 	@PostMapping()
 	public String addReportProduct(@RequestBody ProductReportsRequest productReportsRequest,
 			@RequestHeader("Authorization") String token) {
+		try {  
+		    int[] data = requestOtherPortService.getProduct(productReportsRequest.getOrder_report(),  
+		            productReportsRequest.getProduct_id(), token);  
 
-		int[] data = requestOtherPortService.getProduct(productReportsRequest.getOrder_report(),
-				productReportsRequest.getProduct_id(), token);
+		    // Kiểm tra data không phải là null và có độ dài tối thiểu là 2  
+		    if (data == null || data.length < 2) {  
+		        return "Không thể lấy dữ liệu sản phẩm. Dữ liệu không hợp lệ.";  
+		    }  
 
-		productReportsRequest.setTotal_sold(data[0]);
-		productReportsRequest.setRevenue(new BigDecimal(data[1]));
+		    productReportsRequest.setTotal_sold(data[0]);  
+		    productReportsRequest.setRevenue(new BigDecimal(data[1]));  
+
+		} catch (Exception e) {  
+		    return "Có lỗi xảy ra khi lấy dữ liệu sản phẩm: " + e.getMessage();  
+		}  
 
 		if (!requestOtherPortService.checkOtherItemsExist(productReportsRequest.getProduct_id(),
 				productReportsRequest.getOrder_report(), token)) {

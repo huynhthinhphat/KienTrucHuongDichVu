@@ -29,15 +29,13 @@ public class OrdersReportsService {
 	}
 
 	public String addOrdersReports(OrdersReportsRequest ordersReportsRequest) {
-
-		OrdersReports orderReport = new OrdersReports();
-		
 		OrdersReports status = ordersReportsRepository.getOrdersReports(ordersReportsRequest.getOrder_id());
 		
 		if(status != null) {
 			return "Báo cáo đơn hàng đã tồn tại";
 		}
 		
+		OrdersReports orderReport = new OrdersReports();
 		orderReport.setOrder_id(ordersReportsRequest.getOrder_id());
 
 		return ordersReportsRepository.save(orderReport) != null ? "Tạo báo cáo đơn hàng thành công" : "Báo cáo đơn hàng không tồn tại";
