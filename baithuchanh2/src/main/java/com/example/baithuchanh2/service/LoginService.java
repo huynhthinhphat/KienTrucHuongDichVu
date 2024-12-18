@@ -24,13 +24,15 @@ public class LoginService {
 	public String login(String username, String password) {
 
 		Optional<User> user = repo.findByUsername(username);
-
+		String token = null;
 		if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+			
 			// Nếu đăng nhập thành công, sinh JWT token và trả về
-			String token = JwtUtil.generateToken(username);
+			token = JwtUtil.generateToken(username);
+			
 			return token; // Trả về token JWT
-		} else {
-			return "Invalid credentials"; // Nếu thông tin đăng nhập sai
 		}
+
+		return token;
 	}
 }

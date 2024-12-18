@@ -22,9 +22,8 @@ public class LoginController {
 		String token = loginService.login(user.getUsername(), user.getPassword());
 
 		if(token == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai username hoặc password.");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sai username hoặc password.");
 		}
-		
 		return ResponseEntity.ok(token);
 	}
 
