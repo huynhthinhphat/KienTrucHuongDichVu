@@ -16,7 +16,7 @@ public class RequestOtherPortService {
 	private RestTemplate restTemplate;
 
 	public Boolean auth(String token) {
-		String url = "http://localhost:8080/auth/product";
+		String url = "http://localhost:8080/auth/baithuchanh";
 
 		// Tạo HttpHeaders và thêm Authorization header với Bearer token
 		// tạo ra một đối tượng HttpHeaders và thiết lập một header HTTP với tên là Authorization và giá trị là token

@@ -1,5 +1,6 @@
 package com.example.baithuchanh3.service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.*;
@@ -46,10 +47,15 @@ public class ProductService {
 
 			Product updateProduct = product.get();
 
-			updateProduct.setName(productRequest.getName());
-			updateProduct.setDescription(productRequest.getDescription());
-			updateProduct.setPrice(productRequest.getPrice());
-			updateProduct.setQuantity(productRequest.getQuantity());
+			String name = productRequest.getName() != null && !productRequest.getName().isEmpty() ? productRequest.getName() : product.get().getName();
+			String description = productRequest.getDescription() != null && !productRequest.getDescription().isEmpty() ? productRequest.getDescription() : product.get().getDescription();
+			BigDecimal price = productRequest.getPrice() != null ? productRequest.getPrice() : product.get().getPrice();
+			int quantity = productRequest.getQuantity() != 0 ? productRequest.getQuantity() : product.get().getQuantity();
+
+			updateProduct.setName(name);
+			updateProduct.setDescription(description);
+			updateProduct.setPrice(price);
+			updateProduct.setQuantity(quantity);
 			updateProduct.setUpdated_at();
 
 			repo.save(updateProduct);
@@ -59,7 +65,7 @@ public class ProductService {
 
 		return false;
 	}
-	
+
 	public boolean deleteProduct(int id) {
 
 		Optional<Product> product = getById(id);
